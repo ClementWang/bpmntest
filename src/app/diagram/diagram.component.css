@@ -1,0 +1,8 @@
+.modeler {
+  height: 450px;
+  width: 100%;
+  display: flex;
+}
+.canvas {
+  width: 80%;
+}
