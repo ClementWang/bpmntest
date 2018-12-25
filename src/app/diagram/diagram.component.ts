@@ -34,10 +34,12 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/bpmn
 })
 export class DiagramComponent implements AfterContentInit, OnChanges, OnDestroy {
   private bpmnJS: BpmnJS;
+  svgImg: any;
 
   @ViewChild('canvas') private canvas: ElementRef;
   @ViewChild('properties') private properties: ElementRef;
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
+  @Output() private saveSuccess: EventEmitter<any> = new EventEmitter();
 
   @Input() private url: string;
 
@@ -68,7 +70,7 @@ export class DiagramComponent implements AfterContentInit, OnChanges, OnDestroy 
 
   ngOnChanges(changes: SimpleChanges) {
     // re-import whenever the url changes
-    if (changes.url) {
+    if (changes.url && changes.url.currentValue) {
       this.loadUrl(changes.url.currentValue);
     }
   }
@@ -107,4 +109,45 @@ export class DiagramComponent implements AfterContentInit, OnChanges, OnDestroy 
     );
   }
 
+  loadXml(bpmnJS: any, xml: string) {
+    bpmnJS.importXML(xml, function(err, warnings) {
+      if (err) {
+        console.error(err);
+      }
+      if (warnings) {
+        console.log(warnings);
+      }
+    });
+  }
+
+  newDiagram() {
+    this.http.get('../../assets/newDiagram.bpmn', {
+      responseType: 'text'
+    }).subscribe((diagramXML: string) => {
+      this.loadXml(this.bpmnJS, diagramXML);
+    });
+  }
+
+  save() {
+    this.bpmnJS.saveXML((error, xml) => {
+      console.log(error);
+      console.log(xml);
+      const url = 'http://127.0.0.1/api/diagram/create';
+      this.http.post(url, xml, {
+        headers: {
+          Authorization: 'Basic d2poOnh4eA=='
+        },
+      }).subscribe(response => {
+        console.log(response);
+        this.saveSuccess.emit(true);
+      });
+    });
+  }
+
+  downloadImage() {
+    this.bpmnJS.saveSVG((error, svgXml) => {
+      console.log(error);
+      console.log(svgXml);
+    });
+  }
 }

@@ -2,3 +2,13 @@
   width: 100%;
   height: 400px;
 }
+ul {
+  list-style: none;
+}
+.process-item {
+  display: flex;
+  margin: 5px;
+}
+.process-item > li {
+  margin: 5px;
+}

@@ -9,26 +9,64 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent implements OnInit {
   title = 'app';
-  diagramUrl = 'http://127.0.0.1/api/process/diagram/defect';
+  baseUrl = 'http://127.0.0.1/api';
+  processDefines = [];
   diagramImg: SafeHtml;
+  diagramUrl: string;
 
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
 
   }
 
   ngOnInit() {
-    const url = 'http://127.0.0.1/api/process/image';
-    this.http.get(url, {
-      headers: {
-        Authorization: 'Basic d2poOnh4eA=='
-      },
+    this.getProcessDefines();
+  }
+
+  getProcessDefines() {
+    this.http.get(`${this.baseUrl}/process/defines`, {
+      headers: this.getAuthHeader()
+    }).subscribe(response => {
+      this.processDefines = response['content'];
+    });
+  }
+
+  showProcessSatus(defineId: string, instanceId: string) {
+    this.http.get(`${this.baseUrl}/process/image`, {
+      headers: this.getAuthHeader(),
       responseType: 'text',
       params: {
-        defineKey: 'defect',
-        instanceId: 'c942d49d-050b-11e9-a96e-484d7e993162'
+        defineId: defineId,
+        instanceId: instanceId
       }
     }).subscribe(data => {
       this.diagramImg = this.sanitizer.bypassSecurityTrustHtml(data);
     });
+  }
+
+  showProcessDefine(defineId: string) {
+    this.diagramUrl = `${this.baseUrl}/diagram/${defineId}`;
+  }
+
+  deleteProcess(defineId: string) {
+    this.http.delete(`${this.baseUrl}/diagram/${defineId}`, {
+      headers: this.getAuthHeader()
+    }).subscribe(response => {
+      console.log(response);
+      this.refresh();
+    });
+  }
+
+  refresh() {
+    this.diagramImg = null;
+    this.diagramUrl = null;
+    this.getProcessDefines();
+  }
+
+  getAuthHeader() {
+    const username = 'wjh';
+    const password = 'xxx';
+    return {
+      Authorization: 'Basic ' + btoa(username + ':' + password)
+    };
   }
 }

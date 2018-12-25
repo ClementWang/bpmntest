@@ -1,4 +1,8 @@
 <div class="modeler">
-  <div #canvas class="canvas"></div>
+  <div #canvas class="canvas">
+    <button (click)="newDiagram()">New</button>
+    <button (click)="save()">Save</button>
+    <button (click)="downloadImage()">Download image</button>
+  </div>
   <div #properties class="properties"></div>
 </div>

@@ -4,17 +4,15 @@
     Welcome to {{ title }}!
   </h1>
 </div>
-<h2>Here are some links to help you start: </h2>
 <ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
+  <li *ngFor="let process of processDefines">
+      <ul class="process-item">
+          <li><span>{{process.name}}-{{process.version}}</span></li>
+          <li><button (click)="showProcessSatus(process.id)">流程状态图</button></li>
+          <li><button (click)="showProcessDefine(process.id)">流程定义</button></li>
+          <li><button (click)="deleteProcess(process.id)">删除</button></li>
+      </ul>
   </li>
 </ul>
-<app-diagram [url]="diagramUrl"></app-diagram>
-<!-- <div class="diagramImg" [innerHTML]="diagramImg"></div> -->
+<div *ngIf="diagramImg" class="diagramImg" [innerHTML]="diagramImg"></div>
+<app-diagram [url]="diagramUrl" (saveSuccess)="refresh()"></app-diagram>
