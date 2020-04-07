@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent implements OnInit {
   title = 'app';
-  baseUrl = 'http://127.0.0.1/api';
+  baseUrl = 'http://127.0.0.1:8088/api/v1';
   processDefines = [];
   diagramImg: SafeHtml;
   diagramUrl: string;

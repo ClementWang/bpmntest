@@ -26,6 +26,7 @@ import { importDiagram } from './rx';
 import { throwError } from 'rxjs';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/bpmn';
+import customTranslate from './translate/customTranslate';
 
 @Component({
   selector: 'app-diagram',
@@ -44,11 +45,14 @@ export class DiagramComponent implements AfterContentInit, OnChanges, OnDestroy 
   @Input() private url: string;
 
   constructor(private http: HttpClient) {
-
+    const customTranslateModule = {
+      translate: [ 'value', customTranslate ]
+    };
     this.bpmnJS = new BpmnJS({
       additionalModules: [
         propertiesPanelModule,
-        propertiesProviderModule
+        propertiesProviderModule,
+        customTranslateModule
       ]
     });
 
